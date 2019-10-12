@@ -13,7 +13,7 @@ const config = {
     module: {
         rules: [
             {
-                test: /\.tsx?$/,
+                test: /\.(ts|tsx)?$/,
                 use: 'ts-loader',
                 exclude: /node_modules/,
             },
@@ -34,6 +34,9 @@ const config = {
             },
         ]),
     ],
+    resolve: {
+        extensions: ['.ts', '.js', '.json']
+    }
 };
 
 export default config;

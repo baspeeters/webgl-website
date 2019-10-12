@@ -1,6 +1,7 @@
 import {
     BoxGeometry,
     Camera,
+    CircleGeometry,
     Font,
     FontLoader,
     Geometry,
@@ -13,34 +14,41 @@ import {
     TextGeometry,
     WebGLRenderer,
 } from 'three';
+import World from './world';
+
+import {translateClientX, translateClientY} from './world/utils';
 
 const width: number = window.innerWidth;
 const height: number = window.innerHeight;
-const zoomFactor: number = 100;
 const emptyGeometry: Geometry = new BoxGeometry();
 
 let camera: Camera;
 let scene: Scene;
 let renderer: Renderer;
 let textMesh: Mesh;
+let cursorMesh: Mesh;
 let titleGroup: Group;
 let fontLoader: FontLoader;
 let basicMaterial: MeshBasicMaterial;
+
+const world = new World(window);
 
 init();
 animate();
 
 function init() {
     camera = new OrthographicCamera(
-        width / -zoomFactor,
-        width / zoomFactor,
-        height / zoomFactor,
-        height / -zoomFactor,
+        width / -world.zoomFactor,
+        width / world.zoomFactor,
+        height / world.zoomFactor,
+        height / -world.zoomFactor,
         -100,
         1000,
     );
 
     basicMaterial = new MeshBasicMaterial({color: 0x00ff22, transparent: true, opacity: 0.9});
+
+    cursorMesh = new Mesh(new CircleGeometry(0.1, 8), basicMaterial);
     textMesh = new Mesh(emptyGeometry, basicMaterial);
 
     fontLoader = new FontLoader();
@@ -51,11 +59,17 @@ function init() {
     titleGroup = new Group();
     titleGroup.add(textMesh);
 
+    scene.add(cursorMesh);
     scene.add(titleGroup);
 
     renderer = new WebGLRenderer({antialias: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
+
+    window.addEventListener('mousemove', (e: MouseEvent) => {
+        cursorMesh.position.setX(world.translateClientX(e.clientX));
+        cursorMesh.position.setY(world.translateClientY(e.clientY));
+    });
 }
 
 function animate() {
