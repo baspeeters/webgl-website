@@ -4,7 +4,9 @@
   "description": "Personal website with WebGL",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "cross-env TS_NODE_PROJECT='tsconfig-for-webpack-config.json' webpack",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "cross-env TS_NODE_PROJECT='tsconfig-for-webpack-config.json' webpack-dev-server"
   },
   "repository": {
     "type": "git",
@@ -15,5 +17,21 @@
   "bugs": {
     "url": "https://github.com/baspeeters/webgl-website/issues"
   },
-  "homepage": "https://github.com/baspeeters/webgl-website#readme"
+  "homepage": "https://github.com/baspeeters/webgl-website#readme",
+  "devDependencies": {
+    "@types/html-webpack-plugin": "^3.2.1",
+    "@types/node": "^12.7.12",
+    "@types/webpack": "^4.39.3",
+    "@types/webpack-dev-server": "^3.1.7",
+    "cross-env": "^6.0.3",
+    "html-webpack-plugin": "^3.2.0",
+    "path": "^0.12.7",
+    "ts-node": "^8.4.1",
+    "tslint": "^5.20.0",
+    "typescript": "^3.6.4",
+    "webpack": "^4.41.1",
+    "webpack-cli": "^3.3.9",
+    "webpack-dev-server": "^3.8.2"
+  },
+  "dependencies": {}
 }
