@@ -1,0 +1,19 @@
+{
+  "name": "webgl-website",
+  "version": "0.1.0",
+  "description": "Personal website with WebGL",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/baspeeters/webgl-website.git"
+  },
+  "author": "Bas Peeters <bas@peete.rs>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/baspeeters/webgl-website/issues"
+  },
+  "homepage": "https://github.com/baspeeters/webgl-website#readme"
+}
