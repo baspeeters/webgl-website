@@ -2,8 +2,7 @@ import {translateClientX, translateClientY} from './utils';
 
 export default class World {
     public zoomFactor: number = 100;
-
-    private windowBounds: { x: number, y: number };
+    public windowBounds: { x: number, y: number };
 
     constructor(window: Window) {
         this.windowBounds = {

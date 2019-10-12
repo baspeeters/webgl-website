@@ -1,4 +1,5 @@
 import {
+    Box3,
     BoxGeometry,
     Camera,
     CircleGeometry,
@@ -11,12 +12,11 @@ import {
     OrthographicCamera,
     Renderer,
     Scene,
-    TextGeometry,
+    TextGeometry, Vector3,
     WebGLRenderer,
 } from 'three';
-import World from './world';
 
-import {translateClientX, translateClientY} from './world/utils';
+import World from './world';
 
 const width: number = window.innerWidth;
 const height: number = window.innerHeight;
@@ -72,6 +72,7 @@ function init() {
     });
 }
 
+
 function animate() {
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
@@ -86,6 +87,13 @@ function loadText(loader: FontLoader) {
             height: 0.1,
             curveSegments: 4,
             bevelEnabled: false,
-        }).center();
+        });
+
+        const size = new Vector3();
+        const box = new Box3().setFromObject(titleGroup).getSize(size);
+
+        titleGroup.position
+            .setX(world.translateClientX(world.windowBounds.x - 25) - size.x)
+            .setY(world.translateClientY(20) - size.y);
     });
 }
