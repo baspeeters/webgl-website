@@ -9,6 +9,15 @@ const config = {
         compress: true,
         port: 3000,
     },
+    module: {
+        rules: [
+            {
+                test: /\.tsx?$/,
+                use: 'ts-loader',
+                exclude: /node_modules/,
+            },
+        ],
+    },
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'app.bundle.js',
