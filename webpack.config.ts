@@ -1,4 +1,5 @@
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 import path from 'path';
 
 const config = {
@@ -26,6 +27,12 @@ const config = {
         new HtmlWebpackPlugin({
             template: 'src/index.html',
         }),
+        new CopyWebpackPlugin([
+            {
+                from: 'node_modules/three/examples/fonts/droid/droid_sans_mono_regular.typeface.json',
+                to: 'fonts',
+            },
+        ]),
     ],
 };
 

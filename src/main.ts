@@ -1,13 +1,17 @@
 import {
+    Box3,
     BoxGeometry,
     Camera,
+    FontLoader,
     Geometry,
+    Group,
     Material,
     Mesh,
+    MeshBasicMaterial,
     MeshNormalMaterial,
     OrthographicCamera,
     Renderer,
-    Scene,
+    Scene, TextGeometry,
     WebGLRenderer,
 } from 'three';
 
@@ -18,9 +22,12 @@ const zoomFactor: number = 100;
 let camera: Camera;
 let scene: Scene;
 let renderer: Renderer;
-let geometry: Geometry;
-let material: Material;
-let mesh: Mesh;
+let textMesh: Mesh;
+let titleGroup: Group;
+let fontLoader: FontLoader;
+
+init();
+animate();
 
 function init() {
     camera = new OrthographicCamera(
@@ -32,13 +39,13 @@ function init() {
         1000,
     );
 
+    fontLoader = new FontLoader();
+    loadText(fontLoader);
+
     scene = new Scene();
 
-    geometry = new BoxGeometry(1, 1, 1);
-    material = new MeshNormalMaterial();
-
-    mesh = new Mesh(geometry, material);
-    scene.add(mesh);
+    titleGroup = new Group();
+    scene.add(titleGroup);
 
     renderer = new WebGLRenderer({antialias: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -46,15 +53,24 @@ function init() {
 }
 
 function animate() {
-
     requestAnimationFrame(animate);
-
-    mesh.rotation.x += 0.01;
-    mesh.rotation.y += 0.02;
-
     renderer.render(scene, camera);
-
 }
 
-init();
-animate();
+function loadText(loader: FontLoader) {
+    loader.load('fonts/droid_sans_mono_regular.typeface.json', font => {
+        const geometry = new TextGeometry('BAS PEETERS', {
+            font,
+            size: 1,
+            height: 0.1,
+            curveSegments: 4,
+            bevelEnabled: false,
+        });
+
+        const basicMaterial = new MeshBasicMaterial({color: 0x00ff22, transparent: true, opacity: 0.9});
+        textMesh = new Mesh(geometry, basicMaterial);
+        textMesh.geometry.center();
+
+        titleGroup.add(textMesh);
+    });
+}
