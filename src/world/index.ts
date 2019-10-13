@@ -2,6 +2,7 @@ import {translateClientX, translateClientY} from './utils';
 
 export default class World {
     public zoomFactor: number = 100;
+    public sizeFactor: number = 1000;
     public windowBounds: { x: number, y: number };
 
     constructor(window: Window) {
@@ -17,5 +18,9 @@ export default class World {
 
     public translateClientY(pos: number): number {
         return translateClientY(pos, this.windowBounds.y, this.zoomFactor);
+    }
+
+    public transformSize(size: number): number {
+        return size / this.sizeFactor;
     }
 }

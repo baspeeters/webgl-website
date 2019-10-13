@@ -72,7 +72,6 @@ function init() {
     });
 }
 
-
 function animate() {
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
@@ -83,7 +82,7 @@ function loadText(loader: FontLoader) {
     loader.load('fonts/droid_sans_mono_regular.typeface.json', (font: Font) => {
         textMesh.geometry = new TextGeometry('BAS PEETERS', {
             font,
-            size: 1,
+            size: world.transformSize(world.windowBounds.x),
             height: 0.1,
             curveSegments: 4,
             bevelEnabled: false,
