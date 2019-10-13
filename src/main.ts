@@ -18,8 +18,6 @@ import {
 
 import World from './world';
 
-const width: number = window.innerWidth;
-const height: number = window.innerHeight;
 const emptyGeometry: Geometry = new BoxGeometry();
 
 let camera: Camera;
@@ -38,10 +36,10 @@ animate();
 
 function init() {
     camera = new OrthographicCamera(
-        width / -world.zoomFactor,
-        width / world.zoomFactor,
-        height / world.zoomFactor,
-        height / -world.zoomFactor,
+        world.viewportBounds.x / -world.zoomFactor,
+        world.viewportBounds.x / world.zoomFactor,
+        world.viewportBounds.y / world.zoomFactor,
+        world.viewportBounds.y / -world.zoomFactor,
         -100,
         1000,
     );
@@ -63,7 +61,7 @@ function init() {
     scene.add(titleGroup);
 
     renderer = new WebGLRenderer({antialias: true});
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(world.viewportBounds.x, world.viewportBounds.y);
     document.body.appendChild(renderer.domElement);
 
     window.addEventListener('mousemove', (e: MouseEvent) => {
@@ -82,7 +80,7 @@ function loadText(loader: FontLoader) {
     loader.load('fonts/droid_sans_mono_regular.typeface.json', (font: Font) => {
         textMesh.geometry = new TextGeometry('BAS PEETERS', {
             font,
-            size: world.transformSize(world.windowBounds.x),
+            size: world.transformSize(world.viewportBounds.x),
             height: 0.1,
             curveSegments: 4,
             bevelEnabled: false,
@@ -92,7 +90,7 @@ function loadText(loader: FontLoader) {
         const box = new Box3().setFromObject(titleGroup).getSize(size);
 
         titleGroup.position
-            .setX(world.translateClientX(world.windowBounds.x - 25) - size.x)
+            .setX(world.translateClientX(world.viewportBounds.x - 25) - size.x)
             .setY(world.translateClientY(20) - size.y);
     });
 }
