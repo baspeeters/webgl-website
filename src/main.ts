@@ -2,12 +2,13 @@ import {
     Box3,
     BoxGeometry,
     BoxHelper,
-    CircleGeometry,
     Color,
     Font,
     FontLoader,
     Geometry,
     Group,
+    Line,
+    LineBasicMaterial,
     Mesh,
     MeshBasicMaterial,
     Renderer,
@@ -25,10 +26,11 @@ const emptyGeometry: Geometry = new BoxGeometry();
 let scene: Scene;
 let renderer: Renderer;
 let textMesh: Mesh;
-let cursorMesh: Mesh;
+let cursorObject: Line;
 let titleGroup: Group;
 let fontLoader: FontLoader;
 let basicMaterial: MeshBasicMaterial;
+let lineMaterial: LineBasicMaterial;
 
 const world = new World({
     x: window.innerWidth,
@@ -39,9 +41,19 @@ init();
 animate();
 
 function init() {
-    basicMaterial = new MeshBasicMaterial({color: 0x00ff22, transparent: true, opacity: 0.9});
+    const defaultMaterialParams = {color: 0x00ff22, transparent: true, opacity: 0.9};
+    basicMaterial = new MeshBasicMaterial(defaultMaterialParams);
+    lineMaterial = new LineBasicMaterial(defaultMaterialParams);
 
-    cursorMesh = new Mesh(new CircleGeometry(0.1, 8), basicMaterial);
+    const cursorGeometry = new Geometry();
+    cursorGeometry.vertices.push(
+        new Vector3(0, 0.3, 2),
+        new Vector3(0.3, 0, 2),
+        new Vector3(0, -0.1, 2),
+        new Vector3(0, 0.3, 2),
+    );
+
+    cursorObject = new Line(cursorGeometry, lineMaterial);
     textMesh = new Mesh(emptyGeometry, basicMaterial);
 
     fontLoader = new FontLoader();
@@ -52,7 +64,7 @@ function init() {
     titleGroup = new Group();
     titleGroup.add(textMesh);
 
-    scene.add(cursorMesh);
+    scene.add(cursorObject);
     scene.add(titleGroup);
 
     renderer = new WebGLRenderer({antialias: true});
@@ -63,8 +75,8 @@ function init() {
     window.addEventListener('mousemove', (e: MouseEvent) => {
         clientPos = world.translateViewportToWorld({x: e.clientX, y: e.clientY});
 
-        cursorMesh.position.setX(clientPos.x);
-        cursorMesh.position.setY(clientPos.y);
+        cursorObject.position.setX(clientPos.x);
+        cursorObject.position.setY(clientPos.y);
     });
 }
 
