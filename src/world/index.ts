@@ -1,26 +1,43 @@
-import {translateClientX, translateClientY} from './utils';
+import {Camera, PerspectiveCamera, Vec2, Vector3} from 'three';
+import {translateViewportToWorld} from './utils';
 
 export default class World {
     public zoomFactor: number = 100;
     public sizeFactor: number = 1000;
-    public viewportBounds: { x: number, y: number };
+    public viewportBounds: Vec2;
 
-    constructor(window: Window) {
-        this.viewportBounds = {
-            x: window.innerWidth,
-            y: window.innerHeight,
-        };
+    public camera: Camera;
+
+    private translationVec = new Vector3();
+    private translationPos = new Vector3();
+
+    constructor(viewportBounds: Vec2) {
+        this.viewportBounds = viewportBounds;
+
+        this.initStage();
     }
 
-    public translateClientX(pos: number): number {
-        return translateClientX(pos, this.viewportBounds.x, this.zoomFactor);
-    }
-
-    public translateClientY(pos: number): number {
-        return translateClientY(pos, this.viewportBounds.y, this.zoomFactor);
+    public translateViewportToWorld(clientPos: Vec2): Vec2 {
+        return translateViewportToWorld(
+            clientPos,
+            this.viewportBounds,
+            this.camera,
+            this.translationVec,
+            this.translationPos,
+        );
     }
 
     public transformSize(size: number): number {
         return size / this.sizeFactor;
+    }
+
+    private initStage() {
+        this.camera = new PerspectiveCamera(
+            45,
+            this.viewportBounds.x / this.viewportBounds.y,
+            1,
+            1000,
+        );
+        this.camera.position.z = 15;
     }
 }

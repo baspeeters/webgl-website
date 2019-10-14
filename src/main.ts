@@ -1,18 +1,20 @@
 import {
     Box3,
     BoxGeometry,
-    Camera,
+    BoxHelper,
     CircleGeometry,
+    Color,
     Font,
     FontLoader,
     Geometry,
     Group,
     Mesh,
     MeshBasicMaterial,
-    OrthographicCamera,
     Renderer,
     Scene,
-    TextGeometry, Vector3,
+    TextGeometry,
+    Vec2,
+    Vector3,
     WebGLRenderer,
 } from 'three';
 
@@ -20,7 +22,6 @@ import World from './world';
 
 const emptyGeometry: Geometry = new BoxGeometry();
 
-let camera: Camera;
 let scene: Scene;
 let renderer: Renderer;
 let textMesh: Mesh;
@@ -29,21 +30,15 @@ let titleGroup: Group;
 let fontLoader: FontLoader;
 let basicMaterial: MeshBasicMaterial;
 
-const world = new World(window);
+const world = new World({
+    x: window.innerWidth,
+    y: window.innerHeight,
+});
 
 init();
 animate();
 
 function init() {
-    camera = new OrthographicCamera(
-        world.viewportBounds.x / -world.zoomFactor,
-        world.viewportBounds.x / world.zoomFactor,
-        world.viewportBounds.y / world.zoomFactor,
-        world.viewportBounds.y / -world.zoomFactor,
-        -100,
-        1000,
-    );
-
     basicMaterial = new MeshBasicMaterial({color: 0x00ff22, transparent: true, opacity: 0.9});
 
     cursorMesh = new Mesh(new CircleGeometry(0.1, 8), basicMaterial);
@@ -64,19 +59,21 @@ function init() {
     renderer.setSize(world.viewportBounds.x, world.viewportBounds.y);
     document.body.appendChild(renderer.domElement);
 
+    let clientPos: Vec2;
     window.addEventListener('mousemove', (e: MouseEvent) => {
-        cursorMesh.position.setX(world.translateClientX(e.clientX));
-        cursorMesh.position.setY(world.translateClientY(e.clientY));
+        clientPos = world.translateViewportToWorld({x: e.clientX, y: e.clientY});
+
+        cursorMesh.position.setX(clientPos.x);
+        cursorMesh.position.setY(clientPos.y);
     });
 }
 
 function animate() {
     requestAnimationFrame(animate);
-    renderer.render(scene, camera);
+    renderer.render(scene, world.camera);
 }
 
 function loadText(loader: FontLoader) {
-    // Render multiple text objects (and position) based on a list of objects
     loader.load('fonts/droid_sans_mono_regular.typeface.json', (font: Font) => {
         textMesh.geometry = new TextGeometry('BAS PEETERS', {
             font,
@@ -88,9 +85,14 @@ function loadText(loader: FontLoader) {
 
         const size = new Vector3();
         const box = new Box3().setFromObject(titleGroup).getSize(size);
+        const pos = world.translateViewportToWorld({
+            x: world.viewportBounds.x - 25,
+            y: 25,
+        });
+        titleGroup.position.setX(pos.x - size.x);
+        titleGroup.position.setY(pos.y - size.y);
 
-        titleGroup.position
-            .setX(world.translateClientX(world.viewportBounds.x - 25) - size.x)
-            .setY(world.translateClientY(20) - size.y);
+        titleGroup.updateMatrixWorld(true);
+        scene.add(new BoxHelper(titleGroup, new Color(0x00ff22)));
     });
 }
